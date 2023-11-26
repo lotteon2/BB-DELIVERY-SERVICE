@@ -8,7 +8,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
+import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
@@ -129,5 +131,61 @@ public class DeliveryServiceTest {
         assertThat(dtos).hasSize(2)
                 .extracting("deliveryId", "ordererName")
                 .containsExactlyInAnyOrder(tuple(1L, "홍길동"), tuple(2L, "홍길동"));
+    }
+
+    @Test
+    @DisplayName("배송 정보 수정")
+    void updateDelivery(){
+        // given
+        Delivery savedDelivery = Delivery.builder()
+                .deliveryId(1L)
+                .deliveryOrdererName("홍길동")
+                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererEmail("abc@example.com")
+                .deliveryRecipientName("이순신")
+                .deliveryRecipientPhoneNumber("010-2222-2222")
+                .deliveryZipcode("05231")
+                .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
+                .deliveryAddressDetail("401호")
+                .deliveryRequest("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
+
+        DeliveryUpdateRequestDto dto = DeliveryUpdateRequestDto.builder()
+                .recipientName("손흥민")
+                .recipientPhoneNumber("010-5555-5555")
+                .zipcode("04342")
+                .roadName("서울시 용산구 한남동 독서당로 111-2")
+                .addressDetail("1701호")
+                .build();
+
+        Delivery modifiedDelivery = Delivery.builder()
+                .deliveryId(1L)
+                .deliveryOrdererName("홍길동")
+                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererEmail("abc@example.com")
+                .deliveryRecipientName("손흥민")
+                .deliveryRecipientPhoneNumber("010-5555-5555")
+                .deliveryZipcode("04342")
+                .deliveryRoadName("서울시 용산구 한남동 독서당로 111-2")
+                .deliveryAddressDetail("1701호")
+                .deliveryRequest("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
+
+        Long deliveryId = 1L;
+
+        given(deliveryRepository.findById(any())).willReturn(Optional.ofNullable(savedDelivery));
+        given(deliveryRepository.save(any())).willReturn(modifiedDelivery);
+
+        // when
+        Delivery updatedDelivery = deliveryService.updateDelivery(deliveryId, dto);
+
+        // then
+        Assertions.assertEquals(updatedDelivery.getDeliveryId(), 1L);
+        Assertions.assertEquals(updatedDelivery.getDeliveryRecipientName(), "손흥민");
+        Assertions.assertEquals(updatedDelivery.getDeliveryZipcode(), "04342");
+        Assertions.assertEquals(updatedDelivery.getDeliveryRoadName(), "서울시 용산구 한남동 독서당로 111-2");
+        Assertions.assertEquals(updatedDelivery.getDeliveryAddressDetail(), "1701호");
     }
 }

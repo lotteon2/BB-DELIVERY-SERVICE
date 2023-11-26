@@ -1,8 +1,10 @@
 package kr.bb.delivery.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
+import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.exception.errors.DeliveryEntityNotFoundException;
@@ -37,6 +39,13 @@ public class DeliveryService {
     public List<DeliveryReadResponseDto> getDelivery(List<Long> deliveryIds){
         List<Delivery> deliveries = deliveryRepository.findAllById(deliveryIds);
         return deliveries.stream().map(DeliveryReadResponseDto::fromEntity).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Delivery updateDelivery(Long deliveryId, DeliveryUpdateRequestDto dto){
+        Delivery foundDelivery = deliveryRepository.findById(deliveryId).orElseThrow(DeliveryEntityNotFoundException::new);
+        foundDelivery.modifyDeliveryInfo(dto);
+        return deliveryRepository.save(foundDelivery);
     }
 
 }
