@@ -1,10 +1,15 @@
 package kr.bb.delivery;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+import java.util.List;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
+import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.repository.DeliveryRepository;
@@ -15,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,8 +61,8 @@ public class DeliveryServiceTest {
                 .deliveryCost(5000L)
                 .build();
 
-        Mockito.when(deliveryRepository.save(any(Delivery.class))).thenReturn(mockDelivery);
-//        given(deliveryRepository.save(any())).willReturn(mockDelivery);
+//        Mockito.when(deliveryRepository.save(any(Delivery.class))).thenReturn(mockDelivery);
+        given(deliveryRepository.save(any())).willReturn(mockDelivery);
 
         //when
         Delivery savedDelivery = deliveryService.createDelivery(dto);
@@ -81,4 +85,49 @@ public class DeliveryServiceTest {
         verify(deliveryRepository).save(any());
     }
 
+    @Test
+    @DisplayName("배송 정보 조회")
+    void getAllDeliveryInfo() {
+        // given
+        Delivery delivery1 = Delivery.builder()
+                .deliveryId(1L)
+                .deliveryOrdererName("홍길동")
+                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererEmail("abc@example.com")
+                .deliveryRecipientName("이순신")
+                .deliveryRecipientPhoneNumber("010-2222-2222")
+                .deliveryZipcode("05231")
+                .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
+                .deliveryAddressDetail("401호")
+                .deliveryRequest("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
+
+        Delivery delivery2 = Delivery.builder()
+                .deliveryId(2L)
+                .deliveryOrdererName("홍길동")
+                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererEmail("abc@example.com")
+                .deliveryRecipientName("이순신")
+                .deliveryRecipientPhoneNumber("010-2222-2222")
+                .deliveryZipcode("05231")
+                .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
+                .deliveryAddressDetail("401호")
+                .deliveryRequest("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
+
+        List<Long> deliveryIds = Arrays.asList(1L, 2L);
+
+//        Mockito.when(deliveryRepository.findAllById(deliveryIds)).thenReturn(List.of(delivery1, delivery2));
+        given(deliveryRepository.findAllById(deliveryIds)).willReturn(List.of(delivery1, delivery2));
+
+        // when
+        List<DeliveryReadResponseDto> dtos = deliveryService.getDelivery(deliveryIds);
+
+        // then
+        assertThat(dtos).hasSize(2)
+                .extracting("deliveryId", "ordererName")
+                .containsExactlyInAnyOrder(tuple(1L, "홍길동"), tuple(2L, "홍길동"));
+    }
 }
