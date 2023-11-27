@@ -1,9 +1,11 @@
 package kr.bb.delivery;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
+import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.repository.DeliveryRepository;
@@ -11,18 +13,17 @@ import kr.bb.delivery.service.DeliveryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 public class DeliveryServiceTest {
-    @InjectMocks
+    @Autowired
     private DeliveryService deliveryService;
 
-    @Mock
+    @Autowired
     private DeliveryRepository deliveryRepository;
 
     @Test
@@ -30,11 +31,6 @@ public class DeliveryServiceTest {
     public void createDeliveryService(){
         // given
         DeliveryInsertRequestDto dto = createInsertRequestDto();
-
-        Delivery mockDelivery = createDeliveryEntity();
-
-        Mockito.when(deliveryRepository.save(any(Delivery.class))).thenReturn(mockDelivery);
-//        given(deliveryRepository.save(any())).willReturn(mockDelivery);
 
         //when
         Delivery savedDelivery = deliveryService.createDelivery(dto);
@@ -53,8 +49,27 @@ public class DeliveryServiceTest {
         Assertions.assertEquals(savedDelivery.getDeliveryRequest(), "빠른 배송 부탁드려요~");
         Assertions.assertEquals(savedDelivery.getDeliveryCost(), 5000L);
         Assertions.assertEquals(savedDelivery.getDeliveryStatus(), DeliveryStatus.PENDING);
+    }
 
-        verify(deliveryRepository).save(any());
+    @Test
+    @DisplayName("배송 정보 조회")
+    void getAllDeliveryInfo() {
+        // given
+        Delivery delivery1 = createDeliveryEntity("홍길동", "010-1111-1111");
+        Delivery delivery2 = createDeliveryEntity("이순신", "010-2222-2222");
+        deliveryRepository.saveAll(List.of(delivery1, delivery2));
+
+        List<Delivery> foundDeliveries = deliveryRepository.findAllById(List.of(delivery1.getDeliveryId(), delivery2.getDeliveryId()));
+        List<Long> deliveryIds = foundDeliveries.stream().map(Delivery::getDeliveryId).collect(
+                Collectors.toList());
+
+        // when
+        List<DeliveryReadResponseDto> dtos = deliveryService.getDelivery(deliveryIds);
+
+        // then
+        assertThat(dtos).hasSize(2)
+                .extracting("ordererName")
+                .containsExactlyInAnyOrder("홍길동", "이순신");
     }
 
     private DeliveryInsertRequestDto createInsertRequestDto(){
@@ -72,11 +87,10 @@ public class DeliveryServiceTest {
                 .build();
     }
 
-    private Delivery createDeliveryEntity(){
+    private Delivery createDeliveryEntity(String ordererName, String ordererPhoneNumber){
         return Delivery.builder()
-                .deliveryId(1L)
-                .deliveryOrdererName("홍길동")
-                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererName(ordererName)
+                .deliveryOrdererPhoneNumber(ordererPhoneNumber)
                 .deliveryOrdererEmail("abc@example.com")
                 .deliveryRecipientName("이순신")
                 .deliveryRecipientPhoneNumber("010-2222-2222")

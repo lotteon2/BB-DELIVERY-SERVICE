@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Check;
 
 @Getter
 @Entity
@@ -37,6 +38,7 @@ public class Delivery extends BaseEntity {
   private String deliveryOrdererPhoneNumber;
 
   @Column(name = "delivery_orderer_email", nullable = false)
+  @Check(constraints = "delivery_orderer_email LIKE '%@%'")
   private String deliveryOrdererEmail;
 
   @Column(name = "delivery_recipient_name", nullable = false)
@@ -54,7 +56,7 @@ public class Delivery extends BaseEntity {
   @Column(name = "delivery_recipient_phone_number", nullable = false)
   private String deliveryRecipientPhoneNumber;
 
-  @Column(name = "delivery_request", nullable = false)
+  @Column(name = "delivery_request")
   private String deliveryRequest;
 
   @Column(name = "delivery_cost", nullable = false)
@@ -64,5 +66,7 @@ public class Delivery extends BaseEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "delivery_status", nullable = false)
   private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+
+
 
 }
