@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.entity.common.BaseEntity;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,6 +67,13 @@ public class Delivery extends BaseEntity {
   @Column(name = "delivery_status", nullable = false)
   private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
 
+  public void modifyDeliveryInfo(DeliveryUpdateRequestDto dto){
+    this.deliveryRecipientName = dto.getRecipientName();
+    this.deliveryRecipientPhoneNumber = dto.getRecipientPhoneNumber();
+    this.deliveryZipcode = dto.getZipcode();
+    this.deliveryRoadName = dto.getRoadName();
+    this.deliveryAddressDetail = dto.getAddressDetail();
 
+  }
 
 }

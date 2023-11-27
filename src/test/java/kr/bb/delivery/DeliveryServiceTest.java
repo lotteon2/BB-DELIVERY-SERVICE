@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
+import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
@@ -70,6 +71,33 @@ public class DeliveryServiceTest {
         assertThat(dtos).hasSize(2)
                 .extracting("ordererName")
                 .containsExactlyInAnyOrder("홍길동", "이순신");
+    }
+
+    @Test
+    @DisplayName("배송 정보 수정")
+    void updateDelivery(){
+        // given
+        Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
+
+        DeliveryUpdateRequestDto dto = DeliveryUpdateRequestDto.builder()
+                .recipientName("손흥민")
+                .recipientPhoneNumber("010-5555-5555")
+                .zipcode("04342")
+                .roadName("서울시 용산구 한남동 독서당로 111-2")
+                .addressDetail("1701호")
+                .build();
+
+        Delivery savedDelivery = deliveryRepository.save(delivery);
+
+        // when
+        Delivery updatedDelivery = deliveryService.updateDelivery(savedDelivery.getDeliveryId(), dto);
+
+        // then
+        Assertions.assertNotNull(updatedDelivery.getDeliveryId());
+        Assertions.assertEquals(updatedDelivery.getDeliveryRecipientName(), "손흥민");
+        Assertions.assertEquals(updatedDelivery.getDeliveryZipcode(), "04342");
+        Assertions.assertEquals(updatedDelivery.getDeliveryRoadName(), "서울시 용산구 한남동 독서당로 111-2");
+        Assertions.assertEquals(updatedDelivery.getDeliveryAddressDetail(), "1701호");
     }
 
     private DeliveryInsertRequestDto createInsertRequestDto(){
