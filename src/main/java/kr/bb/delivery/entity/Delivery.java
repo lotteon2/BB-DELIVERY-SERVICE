@@ -76,4 +76,8 @@ public class Delivery extends BaseEntity {
 
   }
 
+  public void modifyStatus(String status){
+    this.deliveryStatus = DeliveryStatus.valueOf(status);
+  }
+
 }
