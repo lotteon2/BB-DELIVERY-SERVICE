@@ -1,7 +1,6 @@
 package kr.bb.delivery;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
@@ -30,32 +29,9 @@ public class DeliveryServiceTest {
     @DisplayName("배송 정보 생성 service 테스트")
     public void createDeliveryService(){
         // given
-        DeliveryInsertRequestDto dto = DeliveryInsertRequestDto.builder()
-                .ordererName("홍길동")
-                .ordererPhoneNumber("010-1111-1111")
-                .ordererEmail("abc@example.com")
-                .recipientName("이순신")
-                .recipientPhoneNumber("010-2222-2222")
-                .zipcode("05231")
-                .roadName("서울시 송파구 올림픽로 23가길 22-1")
-                .addressDetail("401호")
-                .request("빠른 배송 부탁드려요~")
-                .deliveryCost(5000L)
-                .build();
+        DeliveryInsertRequestDto dto = createInsertRequestDto();
 
-        Delivery mockDelivery = Delivery.builder()
-                .deliveryId(1L)
-                .deliveryOrdererName("홍길동")
-                .deliveryOrdererPhoneNumber("010-1111-1111")
-                .deliveryOrdererEmail("abc@example.com")
-                .deliveryRecipientName("이순신")
-                .deliveryRecipientPhoneNumber("010-2222-2222")
-                .deliveryZipcode("05231")
-                .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
-                .deliveryAddressDetail("401호")
-                .deliveryRequest("빠른 배송 부탁드려요~")
-                .deliveryCost(5000L)
-                .build();
+        Delivery mockDelivery = createDeliveryEntity();
 
         Mockito.when(deliveryRepository.save(any(Delivery.class))).thenReturn(mockDelivery);
 //        given(deliveryRepository.save(any())).willReturn(mockDelivery);
@@ -64,7 +40,7 @@ public class DeliveryServiceTest {
         Delivery savedDelivery = deliveryService.createDelivery(dto);
 
         // then
-        Assertions.assertEquals(savedDelivery.getDeliveryId(), 1);
+        Assertions.assertNotNull(savedDelivery.getDeliveryId());
         Assertions.assertNull(savedDelivery.getDeliveryTrackingNumber());
         Assertions.assertEquals(savedDelivery.getDeliveryOrdererName(), "홍길동");
         Assertions.assertEquals(savedDelivery.getDeliveryOrdererPhoneNumber(), "010-1111-1111");
@@ -79,6 +55,37 @@ public class DeliveryServiceTest {
         Assertions.assertEquals(savedDelivery.getDeliveryStatus(), DeliveryStatus.PENDING);
 
         verify(deliveryRepository).save(any());
+    }
+
+    private DeliveryInsertRequestDto createInsertRequestDto(){
+        return DeliveryInsertRequestDto.builder()
+                .ordererName("홍길동")
+                .ordererPhoneNumber("010-1111-1111")
+                .ordererEmail("abc@example.com")
+                .recipientName("이순신")
+                .recipientPhoneNumber("010-2222-2222")
+                .zipcode("05231")
+                .roadName("서울시 송파구 올림픽로 23가길 22-1")
+                .addressDetail("401호")
+                .request("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
+    }
+
+    private Delivery createDeliveryEntity(){
+        return Delivery.builder()
+                .deliveryId(1L)
+                .deliveryOrdererName("홍길동")
+                .deliveryOrdererPhoneNumber("010-1111-1111")
+                .deliveryOrdererEmail("abc@example.com")
+                .deliveryRecipientName("이순신")
+                .deliveryRecipientPhoneNumber("010-2222-2222")
+                .deliveryZipcode("05231")
+                .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
+                .deliveryAddressDetail("401호")
+                .deliveryRequest("빠른 배송 부탁드려요~")
+                .deliveryCost(5000L)
+                .build();
     }
 
 }

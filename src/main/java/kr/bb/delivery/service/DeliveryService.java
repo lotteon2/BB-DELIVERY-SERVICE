@@ -15,18 +15,7 @@ public class DeliveryService {
 
     @Transactional
     public Delivery createDelivery(DeliveryInsertRequestDto dto){
-        Delivery delivery = Delivery.builder()
-                .deliveryOrdererName(dto.getOrdererName())
-                .deliveryOrdererPhoneNumber(dto.getOrdererPhoneNumber())
-                .deliveryOrdererEmail(dto.getOrdererEmail())
-                .deliveryRecipientName(dto.getRecipientName())
-                .deliveryRoadName(dto.getRoadName())
-                .deliveryAddressDetail(dto.getAddressDetail())
-                .deliveryZipcode(dto.getZipcode())
-                .deliveryRecipientPhoneNumber(dto.getRecipientPhoneNumber())
-                .deliveryRequest(dto.getRequest())
-                .deliveryCost(dto.getDeliveryCost())
-                .build();
+        Delivery delivery = dto.toEntity();
         return deliveryRepository.save(delivery);
     }
 
