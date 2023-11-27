@@ -2,25 +2,32 @@ package kr.bb.delivery.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kr.bb.delivery.entity.common.BaseEntity;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "delivery")
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Delivery extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "delivery_id")
   private Long deliveryId;
 
-  @Column(name = "delivery_tracking_number", nullable = false, unique = true)
+  @Column(name = "delivery_tracking_number", unique = true)
   private String deliveryTrackingNumber;
 
   @Column(name = "delivery_orderer_name", nullable = false)
@@ -53,6 +60,9 @@ public class Delivery extends BaseEntity {
   @Column(name = "delivery_cost", nullable = false)
   private Long deliveryCost;
 
+  @Builder.Default
+  @Enumerated(EnumType.STRING)
   @Column(name = "delivery_status", nullable = false)
-  private String deliveryStatus;
+  private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+
 }
