@@ -36,7 +36,7 @@ public class DeliveryServiceTest {
   }
 
   @Test
-  @DisplayName("배송 정보 생성 service 테스트")
+  @DisplayName("배송 정보 생성")
   public void createDeliveryService() {
     // given
     DeliveryInsertRequestDto dto = createInsertRequestDto();
