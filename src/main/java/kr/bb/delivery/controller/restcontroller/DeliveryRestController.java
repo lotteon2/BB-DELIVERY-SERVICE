@@ -24,4 +24,11 @@ public class DeliveryRestController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/delivery/{orderDeliveryId}")
+    public ResponseEntity<Void> changeDeliveryStatus(@PathVariable Long orderDeliveryId, @RequestBody String status){
+        deliveryService.changeStatus(orderDeliveryId, status);
+
+        return ResponseEntity.ok().build();
+    }
 }
