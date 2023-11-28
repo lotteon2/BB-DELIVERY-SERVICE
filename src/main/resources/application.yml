@@ -16,3 +16,7 @@ management:
           - "bus-refresh"
 endpoint:
   order-service: http://localhost:8900
+
+logging:
+  level:
+    org.apache.kafka: ERROR
