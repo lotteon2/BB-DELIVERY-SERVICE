@@ -8,10 +8,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import kr.bb.delivery.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "delivery_address")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryAddress extends BaseEntity {
