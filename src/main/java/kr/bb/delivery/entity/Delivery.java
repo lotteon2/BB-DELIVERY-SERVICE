@@ -73,7 +73,6 @@ public class Delivery extends BaseEntity {
     this.deliveryZipcode = dto.getZipcode();
     this.deliveryRoadName = dto.getRoadName();
     this.deliveryAddressDetail = dto.getAddressDetail();
-
   }
 
   public void modifyStatus(String status){
