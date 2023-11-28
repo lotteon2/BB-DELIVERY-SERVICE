@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryAddressService {
     private final DeliveryAddressRepository deliveryAddressRepository;
 
-    @Transactional
     public List<DeliveryAddressReadResponseDto> getDeliveryAddress(Long userId){
         List<DeliveryAddress> deliveryAddressList = deliveryAddressRepository.findAllByUserId(userId);
         return deliveryAddressList.stream().map(DeliveryAddressReadResponseDto::fromEntity).collect(

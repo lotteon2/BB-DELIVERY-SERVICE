@@ -16,8 +16,10 @@ spring:
     defer-datasource-initialization: true
     properties:
       hibernate:
-        format_sql: true
         show_sql: true
+  sql:
+    init:
+      mode: never       # test 시에는 sql script를 load 하지 않기
 
 endpoint:
   order-service: http://localhost:8900
