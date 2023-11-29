@@ -1,8 +1,10 @@
 package kr.bb.delivery.controller.clientcontroller;
 
 import java.util.List;
+import kr.bb.delivery.dto.request.DeliveryAddressInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
+import kr.bb.delivery.service.DeliveryAddressService;
 import kr.bb.delivery.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/delivery")
 public class OrderClientController {
   private final DeliveryService deliveryService;
+  private final DeliveryAddressService deliveryAddressService;
 
   @PostMapping("")
   public ResponseEntity<Void> createDelivery(@RequestBody DeliveryInsertRequestDto requestDto) {
@@ -28,5 +31,11 @@ public class OrderClientController {
   @GetMapping("")
   public ResponseEntity<List<DeliveryReadResponseDto>> getDelivery(@RequestBody List<Long> deliveryIds) {
     return ResponseEntity.ok().body(deliveryService.getDelivery(deliveryIds));
+  }
+
+  @PostMapping("/delivery-address")
+  public ResponseEntity<Void> createDeliveryAddress(@RequestBody DeliveryAddressInsertRequestDto requestDto){
+    deliveryAddressService.createDeliveryAddress(requestDto);
+    return ResponseEntity.ok().build();
   }
 }
