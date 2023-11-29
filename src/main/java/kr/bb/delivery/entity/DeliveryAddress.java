@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kr.bb.delivery.dto.request.DeliveryAddressInsertRequestDto;
 import kr.bb.delivery.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,4 +42,14 @@ public class DeliveryAddress extends BaseEntity {
 
   @Column(name = "delivery_recipient_phone_number", nullable = false)
   private String deliveryRecipientPhoneNumber;
+
+  public DeliveryAddress replaceOldDeliveryAddressInfo(DeliveryAddressInsertRequestDto dto){
+    this.deliveryRecipientName = dto.getRecipientName();
+    this.deliveryZipcode = dto.getZipcode();
+    this.deliveryRoadName = dto.getRoadName();
+    this.deliveryAddressDetail = dto.getAddressDetail();
+    this.deliveryRecipientPhoneNumber = dto.getPhoneNumber();
+
+    return this;
+  }
 }

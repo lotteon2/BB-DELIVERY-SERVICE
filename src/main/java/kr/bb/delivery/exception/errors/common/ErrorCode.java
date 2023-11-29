@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validataion failed for args"),
-    DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "no matching Delivery found");
+    DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "No matching Delivery found"),
+    DELIVERY_ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "No matching Delivery Address found");
 
     private final HttpStatus code;
     private final String message;
