@@ -65,7 +65,7 @@ public class Delivery extends BaseEntity {
   @Builder.Default
   @Enumerated(EnumType.STRING)
   @Column(name = "delivery_status", nullable = false)
-  private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+  private DeliveryStatus deliveryStatus = DeliveryStatus.DELIVERY_PENDING;
 
   public void modifyDeliveryInfo(DeliveryUpdateRequestDto dto){
     this.deliveryRecipientName = dto.getRecipientName();

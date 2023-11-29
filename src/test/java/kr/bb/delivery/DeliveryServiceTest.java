@@ -57,15 +57,15 @@ public class DeliveryServiceTest {
     Assertions.assertEquals(savedDelivery.getDeliveryAddressDetail(), "401호");
     Assertions.assertEquals(savedDelivery.getDeliveryRequest(), "빠른 배송 부탁드려요~");
     Assertions.assertEquals(savedDelivery.getDeliveryCost(), 5000L);
-    Assertions.assertEquals(savedDelivery.getDeliveryStatus(), DeliveryStatus.PENDING);
+    Assertions.assertEquals(savedDelivery.getDeliveryStatus(), DeliveryStatus.DELIVERY_PENDING);
   }
 
   @Test
   @DisplayName("배송 정보 조회")
   void getAllDeliveryInfo() {
     // given
-    Delivery delivery1 = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
-    Delivery delivery2 = createDeliveryEntity("이순신", "010-2222-2222", DeliveryStatus.PENDING);
+    Delivery delivery1 = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.DELIVERY_PENDING);
+    Delivery delivery2 = createDeliveryEntity("이순신", "010-2222-2222", DeliveryStatus.DELIVERY_PENDING);
     deliveryRepository.saveAll(List.of(delivery1, delivery2));
 
     List<Delivery> foundDeliveries =
@@ -85,7 +85,7 @@ public class DeliveryServiceTest {
   @DisplayName("배송 정보 수정")
   void updateDelivery() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.DELIVERY_PENDING);
 
     DeliveryUpdateRequestDto dto =
         DeliveryUpdateRequestDto.builder()
@@ -113,7 +113,7 @@ public class DeliveryServiceTest {
   @DisplayName("배송 상태 변경")
   void modifyDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.DELIVERY_PENDING);
 
     Long deliveryOrderId = 1L;
     String status = "PROCESSING";
@@ -128,14 +128,14 @@ public class DeliveryServiceTest {
     Delivery modifiedStatusDelivery = deliveryService.changeStatus(deliveryOrderId, status);
 
     // then
-    Assertions.assertEquals(modifiedStatusDelivery.getDeliveryStatus(), DeliveryStatus.PROCESSING);
+    Assertions.assertEquals(modifiedStatusDelivery.getDeliveryStatus(), DeliveryStatus.DELIVERY_PROCESSING);
   }
 
   @Test
   @DisplayName("잘못된 값으로 배송상태 변경 막기")
   void modifyWithWrongDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.DELIVERY_PENDING);
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
     Long orderId = 1L;
@@ -153,7 +153,7 @@ public class DeliveryServiceTest {
   @DisplayName("이전 단계의 배송 상태로 변경은 불가능하다")
   void modifyWithPreviousDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PROCESSING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.DELIVERY_PROCESSING);
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
     Long orderId = 1L;
