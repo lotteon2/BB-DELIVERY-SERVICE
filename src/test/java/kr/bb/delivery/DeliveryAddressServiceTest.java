@@ -15,7 +15,6 @@ import kr.bb.delivery.service.DeliveryAddressService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,18 +64,18 @@ public class DeliveryAddressServiceTest {
     // given
     List<DeliveryAddress> list = new ArrayList<>();
     for(int i=0; i<10; i++){
-      list.add(createDeliveryAddressEntity(1L, "수신자"+i+1));
+      list.add(createDeliveryAddressEntity(1L, "수신자"+(i+1)));
     }
     deliveryAddressRepository.saveAll(list);
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "수신자11");
-
-    // when
-    deliveryAddressService.createDeliveryAddress(requestDto);
     DeliveryAddress oldestDeliveryAddress = deliveryAddressRepository.findOldestByUserId(1L, Pageable.ofSize(1)).stream().findFirst().orElseThrow(
             DeliveryAddressEntityNotFoundException::new);
 
+    // when
+    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "수신자11");
+    deliveryAddressService.createDeliveryAddress(requestDto);
+
     // then
-    assertEquals(list.size(), 10);
+    assertEquals(deliveryAddressRepository.countByUserId(1L), 10);
     assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자11");
   }
 

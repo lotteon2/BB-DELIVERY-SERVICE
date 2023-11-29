@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface DeliveryAddressRepository extends JpaRepository<DeliveryAddress, Long> {
     List<DeliveryAddress> findAllByUserId(Long userId);
     Long countByUserId(Long userId);
-    @Query("select da from DeliveryAddress da where da.userId = :userId order by da.createdAt desc")
+    @Query("select da from DeliveryAddress da where da.userId = :userId order by da.updatedAt desc")
     List<DeliveryAddress> findOldestByUserId(Long userId, Pageable pageable);
 }
