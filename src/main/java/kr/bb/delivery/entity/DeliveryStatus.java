@@ -1,9 +1,9 @@
 package kr.bb.delivery.entity;
 
 public enum DeliveryStatus {
-  PENDING("배송 준비중", 1),
-  PROCESSING("배송중", 2),
-  COMPLETED("배송 완료", 3),
+  PENDING("주문접수", 1),
+  PROCESSING("배송시작", 2),
+  COMPLETED("배송완료", 3),
   CANCELED("배송 취소", 4);
 
   private final String message;
