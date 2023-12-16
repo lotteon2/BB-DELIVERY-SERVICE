@@ -78,6 +78,7 @@ jacocoTestCoverageVerification {
                          "**/*mapper*",
                          "**/*Config*",
                          "**/*Dto*",
+                         "**/*Exception.class"
             ]
         }
     }

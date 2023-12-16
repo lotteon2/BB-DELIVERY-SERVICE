@@ -65,7 +65,7 @@ public class Delivery extends BaseEntity {
   @Builder.Default
   @Enumerated(EnumType.STRING)
   @Column(name = "delivery_status", nullable = false)
-  private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+  private DeliveryStatus deliveryStatus = DeliveryStatus.INITIAL;
 
   public void modifyDeliveryInfo(DeliveryUpdateRequestDto dto){
     this.deliveryRecipientName = dto.getRecipientName();
@@ -79,4 +79,5 @@ public class Delivery extends BaseEntity {
     this.deliveryStatus = DeliveryStatus.valueOf(status);
   }
 
+  public void generateTrackingNumber(String trackingNumber){this.deliveryTrackingNumber = trackingNumber;}
 }

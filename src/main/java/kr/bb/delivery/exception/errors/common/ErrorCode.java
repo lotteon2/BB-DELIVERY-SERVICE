@@ -18,11 +18,4 @@ public enum ErrorCode {
         this.message = message;
     }
 
-    public static ErrorCode valueOfCode(HttpStatus errorCode){
-        return Arrays.stream(values())
-                .filter(value -> value.code.equals(errorCode))
-                .findAny()
-                .orElse(null);
-    }
-
 }

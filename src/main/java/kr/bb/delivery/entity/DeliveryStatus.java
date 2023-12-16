@@ -1,10 +1,11 @@
 package kr.bb.delivery.entity;
 
 public enum DeliveryStatus {
+  INITIAL("주문 접수전", 0),
   PENDING("주문접수", 1),
   PROCESSING("배송시작", 2),
   COMPLETED("배송완료", 3),
-  CANCELED("배송 취소", 4);
+  CANCELED("배송취소", 4);
 
   private final String message;
   private final int order;

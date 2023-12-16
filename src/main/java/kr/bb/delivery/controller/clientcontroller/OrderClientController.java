@@ -23,9 +23,9 @@ public class OrderClientController {
   private final DeliveryAddressService deliveryAddressService;
 
   @PostMapping("")
-  public ResponseEntity<Void> createDelivery(@RequestBody DeliveryInsertRequestDto requestDto) {
-    deliveryService.createDelivery(requestDto);
-    return ResponseEntity.ok().build();
+  public ResponseEntity<List<Long>> createDelivery(@RequestBody List<DeliveryInsertRequestDto> requestDto) {
+    List<Long> deliveryIds = deliveryService.createDelivery(requestDto);
+    return ResponseEntity.ok().body(deliveryIds);
   }
 
   @GetMapping("")
