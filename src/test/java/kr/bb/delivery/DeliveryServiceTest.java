@@ -3,6 +3,7 @@ package kr.bb.delivery;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import bloomingblooms.response.SuccessResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.delivery.client.OrderServiceClient;
@@ -39,33 +40,22 @@ public class DeliveryServiceTest {
   @DisplayName("배송 정보 생성")
   public void createDeliveryService() {
     // given
-    DeliveryInsertRequestDto dto = createInsertRequestDto();
+    List<DeliveryInsertRequestDto> dtos = createInsertRequestDto();
 
     // when
-    Delivery savedDelivery = deliveryService.createDelivery(dto);
+    List<Long> savedDeliveryIds = deliveryService.createDelivery(dtos);
 
     // then
-    Assertions.assertNotNull(savedDelivery.getDeliveryId());
-    Assertions.assertNull(savedDelivery.getDeliveryTrackingNumber());
-    Assertions.assertEquals(savedDelivery.getDeliveryOrdererName(), "홍길동");
-    Assertions.assertEquals(savedDelivery.getDeliveryOrdererPhoneNumber(), "010-1111-1111");
-    Assertions.assertEquals(savedDelivery.getDeliveryOrdererEmail(), "abc@example.com");
-    Assertions.assertEquals(savedDelivery.getDeliveryRecipientName(), "이순신");
-    Assertions.assertEquals(savedDelivery.getDeliveryRecipientPhoneNumber(), "010-2222-2222");
-    Assertions.assertEquals(savedDelivery.getDeliveryZipcode(), "05231");
-    Assertions.assertEquals(savedDelivery.getDeliveryRoadName(), "서울시 송파구 올림픽로 23가길 22-1");
-    Assertions.assertEquals(savedDelivery.getDeliveryAddressDetail(), "401호");
-    Assertions.assertEquals(savedDelivery.getDeliveryRequest(), "빠른 배송 부탁드려요~");
-    Assertions.assertEquals(savedDelivery.getDeliveryCost(), 5000L);
-    Assertions.assertEquals(savedDelivery.getDeliveryStatus(), DeliveryStatus.PENDING);
+    Assertions.assertEquals(savedDeliveryIds.size(), dtos.size());
+    Assertions.assertNotNull(savedDeliveryIds.get(0));
   }
 
   @Test
   @DisplayName("배송 정보 조회")
   void getAllDeliveryInfo() {
     // given
-    Delivery delivery1 = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
-    Delivery delivery2 = createDeliveryEntity("이순신", "010-2222-2222", DeliveryStatus.PENDING);
+    Delivery delivery1 = createDeliveryEntity("홍길동", "010-1111-1111");
+    Delivery delivery2 = createDeliveryEntity("이순신", "010-2222-2222");
     deliveryRepository.saveAll(List.of(delivery1, delivery2));
 
     List<Delivery> foundDeliveries =
@@ -85,7 +75,7 @@ public class DeliveryServiceTest {
   @DisplayName("배송 정보 수정")
   void updateDelivery() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
 
     DeliveryUpdateRequestDto dto =
         DeliveryUpdateRequestDto.builder()
@@ -113,7 +103,7 @@ public class DeliveryServiceTest {
   @DisplayName("배송 상태 변경")
   void modifyDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
 
     Long deliveryOrderId = 1L;
     String status = "PROCESSING";
@@ -135,7 +125,7 @@ public class DeliveryServiceTest {
   @DisplayName("잘못된 값으로 배송상태 변경 막기")
   void modifyWithWrongDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PENDING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
     Long orderId = 1L;
@@ -153,11 +143,11 @@ public class DeliveryServiceTest {
   @DisplayName("이전 단계의 배송 상태로 변경은 불가능하다")
   void modifyWithPreviousDeliveryStatus() {
     // given
-    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111", DeliveryStatus.PROCESSING);
+    Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
     Long orderId = 1L;
-    String status = "PENDING";
+    String status = "INITIAL";
 
     SuccessResponse<Long> mockResponse = new SuccessResponse<>("200", "Success", savedDeliveryId);
     Mockito.when(orderServiceClient.getDeliveryId(orderId)).thenReturn(mockResponse);
@@ -167,23 +157,28 @@ public class DeliveryServiceTest {
         IllegalStateException.class, () -> deliveryService.changeStatus(orderId, status));
   }
 
-  private DeliveryInsertRequestDto createInsertRequestDto() {
-    return DeliveryInsertRequestDto.builder()
-        .ordererName("홍길동")
-        .ordererPhoneNumber("010-1111-1111")
-        .ordererEmail("abc@example.com")
-        .recipientName("이순신")
-        .recipientPhoneNumber("010-2222-2222")
-        .zipcode("05231")
-        .roadName("서울시 송파구 올림픽로 23가길 22-1")
-        .addressDetail("401호")
-        .request("빠른 배송 부탁드려요~")
-        .deliveryCost(5000L)
-        .build();
+  private List<DeliveryInsertRequestDto> createInsertRequestDto() {
+    List<DeliveryInsertRequestDto> list = new ArrayList<>();
+
+    list.add(
+        DeliveryInsertRequestDto.builder()
+            .ordererName("홍길동")
+            .ordererPhoneNumber("010-1111-1111")
+            .ordererEmail("abc@example.com")
+            .recipientName("이순신")
+            .recipientPhoneNumber("010-2222-2222")
+            .zipcode("05231")
+            .roadName("서울시 송파구 올림픽로 23가길 22-1")
+            .addressDetail("401호")
+            .request("빠른 배송 부탁드려요~")
+            .deliveryCost(5000L)
+            .build());
+
+    return list;
   }
 
   private Delivery createDeliveryEntity(
-      String ordererName, String ordererPhoneNumber, DeliveryStatus status) {
+      String ordererName, String ordererPhoneNumber) {
     return Delivery.builder()
         .deliveryOrdererName(ordererName)
         .deliveryOrdererPhoneNumber(ordererPhoneNumber)
@@ -191,10 +186,10 @@ public class DeliveryServiceTest {
         .deliveryRecipientName("이순신")
         .deliveryRecipientPhoneNumber("010-2222-2222")
         .deliveryZipcode("05231")
+        .deliveryStatus(DeliveryStatus.PENDING)
         .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
         .deliveryAddressDetail("401호")
         .deliveryRequest("빠른 배송 부탁드려요~")
-        .deliveryStatus(status)
         .deliveryCost(5000L)
         .build();
   }
