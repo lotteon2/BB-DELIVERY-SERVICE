@@ -110,7 +110,6 @@ jacocoTestReport {
                             "**/*mapper*",
                             "**/*Config*",
                             "**/*Dto*",
-                            "**/*Exception.class"
                     ] + Qdomains)
                 })
         )
