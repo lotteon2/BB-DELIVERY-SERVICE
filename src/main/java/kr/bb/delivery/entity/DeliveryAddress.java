@@ -1,5 +1,6 @@
 package kr.bb.delivery.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,13 +44,20 @@ public class DeliveryAddress extends BaseEntity {
   @Column(name = "delivery_recipient_phone_number", nullable = false)
   private String deliveryRecipientPhoneNumber;
 
-  public DeliveryAddress replaceOldDeliveryAddressInfo(DeliveryAddressInsertRequestDto dto){
+  @Column(name = "delivery_used_at")
+  private LocalDateTime deliveryUsedAt;
+
+  public void replaceOldDeliveryAddressInfo(DeliveryAddressInsertRequestDto dto){
     this.deliveryRecipientName = dto.getRecipientName();
     this.deliveryZipcode = dto.getZipcode();
     this.deliveryRoadName = dto.getRoadName();
     this.deliveryAddressDetail = dto.getAddressDetail();
     this.deliveryRecipientPhoneNumber = dto.getPhoneNumber();
-
-    return this;
+    this.deliveryUsedAt = LocalDateTime.now();
   }
+
+  public void updateTime(){
+    this.deliveryUsedAt = LocalDateTime.now();
+  }
+
 }

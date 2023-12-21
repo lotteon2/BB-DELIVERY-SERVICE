@@ -38,49 +38,55 @@ public class DeliveryAddressServiceTest {
         deliveryAddressService.getDeliveryAddress(1L);
 
     // then
-    assertEquals(deliveryAddressList.size(), 2);
+    assertEquals(deliveryAddressList.size(), 3);
     assertThat(deliveryAddressList)
         .extracting("recipientName")
         .contains( "홍길동", "손흥민");
   }
 
   @Test
-  @DisplayName("배송 주소지 생성")
-  void appendDeliveryAddressToList() {
-    DeliveryAddress deliveryAddress1 = createDeliveryAddressEntity(1L, "이강인");
-    deliveryAddressRepository.save(deliveryAddress1);
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민");
+  @DisplayName("기존 배송지 선택")
+  void selectExistingDeliveryAddressFromList() {
+    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", 5L);
 
     deliveryAddressService.createDeliveryAddress(requestDto);
     List<DeliveryAddress> list = deliveryAddressRepository.findAllByUserId(1L);
 
-    assertEquals(list.size(), 2);
-    assertThat(list).extracting("userId", "deliveryRecipientName").contains(tuple(1L, "이강인"), tuple(1L, "손흥민"));
+    assertEquals(list.size(), 1);
+    assertThat(list).extracting("userId", "deliveryRecipientName").contains(tuple(1L, "홍길동"));
+  }
+
+  @Test
+  @DisplayName("신규 배송지 생성")
+  void appendDeliveryAddressToList() {
+    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", null);
+  
+    deliveryAddressService.createDeliveryAddress(requestDto);
+    List<DeliveryAddress> list = deliveryAddressRepository.findAllByUserId(1L);
+  
+    assertEquals(list.size(), 1);
+    assertThat(list).extracting("userId", "deliveryRecipientName").contains(tuple(1L, "손흥민"));
   }
 
   @Test
   @DisplayName("배송 주소지 생성시 목록은 10개를 넘어가면 안된다")
   void addressListShouldNotExceedTheLimit(){
     // given
-    List<DeliveryAddress> list = new ArrayList<>();
-    for(int i=0; i<10; i++){
-      list.add(createDeliveryAddressEntity(1L, "수신자"+(i+1)));
-    }
-    deliveryAddressRepository.saveAll(list);
-    DeliveryAddress oldestDeliveryAddress = deliveryAddressRepository.findOldestByUserId(1L, Pageable.ofSize(1)).stream().findFirst().orElseThrow(
+    DeliveryAddress oldestDeliveryAddress = deliveryAddressRepository.findOldestByUserId(5L, Pageable.ofSize(1)).stream().findFirst().orElseThrow(
             DeliveryAddressEntityNotFoundException::new);
 
     // when
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "수신자11");
+    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자1", null);
     deliveryAddressService.createDeliveryAddress(requestDto);
 
     // then
-    assertEquals(deliveryAddressRepository.countByUserId(1L), 10);
-    assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자11");
+    assertEquals(deliveryAddressRepository.countByUserId(5L), 10);
+    assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자1");
   }
 
-  DeliveryAddressInsertRequestDto createDeliveryAddressInsertRequest(Long userId, String recipientName){
+  DeliveryAddressInsertRequestDto createDeliveryAddressInsertRequest(Long userId, String recipientName, Long deliveryAddressId){
     return DeliveryAddressInsertRequestDto.builder()
+            .deliveryAddressId(deliveryAddressId)
             .userId(userId)
             .recipientName(recipientName)
             .zipcode("우편번호")

@@ -18,26 +18,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class DeliveryRestController {
     private final DeliveryService deliveryService;
     private final DeliveryAddressService deliveryAddressService;
 
-    @PatchMapping("/delivery/{deliveryId}")
+    @PatchMapping("/{deliveryId}")
     public ResponseEntity<Void> updateDeliveryInfo(@PathVariable Long deliveryId, @RequestBody DeliveryUpdateRequestDto requestDto){
         deliveryService.updateDelivery(deliveryId, requestDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/delivery/{orderDeliveryId}")
+    @PatchMapping("/{orderDeliveryId}")
     public ResponseEntity<Void> changeDeliveryStatus(@PathVariable Long orderDeliveryId, @RequestBody String status){
         deliveryService.changeStatus(orderDeliveryId, status);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/delivery/delivery-address")
+    @GetMapping("/delivery-address")
     public ResponseEntity<List<DeliveryAddressReadResponseDto>> getDeliveryAddress(@RequestHeader Long userId){
         return ResponseEntity.ok().body(
                 deliveryAddressService.getDeliveryAddress(userId));

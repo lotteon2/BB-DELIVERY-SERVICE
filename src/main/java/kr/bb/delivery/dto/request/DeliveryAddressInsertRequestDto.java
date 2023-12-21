@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryAddressInsertRequestDto {
+    private Long deliveryAddressId;
     private Long userId;
     private String recipientName;
     private String zipcode;
