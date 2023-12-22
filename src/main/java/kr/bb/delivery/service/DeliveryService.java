@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 import kr.bb.delivery.client.OrderServiceClient;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
-import kr.bb.delivery.dto.response.DeliveryAddressReadResponseDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.exception.errors.DeliveryEntityNotFoundException;
-import kr.bb.delivery.repository.DeliveryAddressRepository;
 import kr.bb.delivery.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,9 +49,9 @@ public class DeliveryService {
   }
 
   @Transactional
-  public Delivery changeStatus(Long deliveryOrderId, String status) {
+  public Delivery changeStatus(Long orderDeliveryId, String status) {
     // deliveryOrderId로 deliveryId 찾아내기.
-    Long deliveryId = orderServiceClient.getDeliveryId(deliveryOrderId).getData();
+    Long deliveryId = orderServiceClient.getDeliveryId(orderDeliveryId).getData();
 
     Delivery savedDelivery =
         deliveryRepository.findById(deliveryId).orElseThrow(DeliveryEntityNotFoundException::new);

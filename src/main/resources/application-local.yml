@@ -1,11 +1,14 @@
 server:
   port: 8300
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: delivery-service
   config:
     activate:
-      on-profile: local, dev, local
+      on-profile: local
     import: optional:configserver:http://localhost:8888
 management:
   endpoints:
@@ -14,9 +17,3 @@ management:
         include:
           - "refresh"
           - "bus-refresh"
-endpoint:
-  order-service: http://localhost:8900
-
-logging:
-  level:
-    org.apache.kafka: ERROR

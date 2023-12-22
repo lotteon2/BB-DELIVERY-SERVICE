@@ -19,7 +19,6 @@ spring:
         show_sql: true
   sql:
     init:
-      mode: never       # test 시에는 sql script를 load 하지 않기
       encoding: UTF-8   # 한글로 인코딩 설정
 
 endpoint:

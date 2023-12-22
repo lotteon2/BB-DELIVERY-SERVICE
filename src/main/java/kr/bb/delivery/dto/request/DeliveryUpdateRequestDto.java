@@ -1,5 +1,6 @@
 package kr.bb.delivery.dto.request;
 
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeliveryUpdateRequestDto {
-    private String recipientName;
-    private String recipientPhoneNumber;
-    private String zipcode;
-    private String roadName;
-    private String addressDetail;
+    @NotEmpty private String recipientName;
+    @NotEmpty private String recipientPhoneNumber;
+    @NotEmpty private String zipcode;
+    @NotEmpty private String roadName;
+    @NotEmpty private String addressDetail;
 }
