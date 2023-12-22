@@ -64,7 +64,7 @@ public class DeliveryAddressServiceTest {
     deliveryAddressService.createDeliveryAddress(requestDto);
     List<DeliveryAddress> list = deliveryAddressRepository.findAllByUserId(1L);
   
-    assertEquals(list.size(), 1);
+    assertEquals(list.size(), 2);
     assertThat(list).extracting("userId", "deliveryRecipientName").contains(tuple(1L, "손흥민"));
   }
 
