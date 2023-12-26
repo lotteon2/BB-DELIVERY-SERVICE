@@ -40,6 +40,7 @@ dependencies {
     implementation group: 'io.github.lotteon-maven', name: 'blooming-blooms-utils', version: '0.1.0-alpha2'
     runtimeOnly 'com.h2database:h2'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'mysql:mysql-connector-java:8.0.33'
 }
 
 dependencyManagement {
