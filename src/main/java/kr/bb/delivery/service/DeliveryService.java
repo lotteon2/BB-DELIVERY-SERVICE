@@ -1,5 +1,6 @@
 package kr.bb.delivery.service;
 
+import bloomingblooms.domain.delivery.UpdateOrderStatusDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.exception.errors.DeliveryEntityNotFoundException;
+import kr.bb.delivery.kafka.KafkaProducer;
 import kr.bb.delivery.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
   private final DeliveryRepository deliveryRepository;
   private final OrderServiceClient orderServiceClient;
+  private final KafkaProducer<UpdateOrderStatusDto> orderStatusDtoKafkaProducer;
 
   @Transactional
   public List<Long> createDelivery(List<DeliveryInsertRequestDto> dtoList) {
@@ -49,7 +52,7 @@ public class DeliveryService {
   }
 
   @Transactional
-  public Delivery changeStatus(Long orderDeliveryId, String status) {
+  public Delivery changeStatus(String orderDeliveryId, String status) {
     // deliveryOrderId로 deliveryId 찾아내기.
     Long deliveryId = orderServiceClient.getDeliveryId(orderDeliveryId).getData();
 
@@ -69,8 +72,12 @@ public class DeliveryService {
     }
     savedDelivery.modifyStatus(status);
 
-    // TODO: order-service로 상태 sync 맞추기 kafka send
-
+    // order-service로 상태 sync 맞추기 kafka send
+    UpdateOrderStatusDto updateOrderStatusDto = UpdateOrderStatusDto.builder()
+            .orderDeliveryId(orderDeliveryId)
+            .status(status)
+            .build();
+    orderStatusDtoKafkaProducer.send("order-delivery-status", updateOrderStatusDto);
 
     return deliveryRepository.save(savedDelivery);
   }

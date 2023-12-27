@@ -1,5 +1,6 @@
 package kr.bb.delivery.entity;
 
+import bloomingblooms.domain.delivery.DeliveryAddressInsertDto;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertRequestDto;
 import kr.bb.delivery.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +47,7 @@ public class DeliveryAddress extends BaseEntity {
   @Column(name = "delivery_used_at")
   private LocalDateTime deliveryUsedAt;
 
-  public void replaceOldDeliveryAddressInfo(DeliveryAddressInsertRequestDto dto){
+  public void replaceOldDeliveryAddressInfo(DeliveryAddressInsertDto dto){
     this.deliveryRecipientName = dto.getRecipientName();
     this.deliveryZipcode = dto.getZipcode();
     this.deliveryRoadName = dto.getRoadName();
