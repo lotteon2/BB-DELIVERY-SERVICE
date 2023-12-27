@@ -48,7 +48,7 @@ public class DeliveryService {
     Delivery foundDelivery =
         deliveryRepository.findById(deliveryId).orElseThrow(DeliveryEntityNotFoundException::new);
     foundDelivery.modifyDeliveryInfo(dto);
-    return deliveryRepository.save(foundDelivery);
+    return foundDelivery;
   }
 
   @Transactional
