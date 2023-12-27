@@ -76,7 +76,7 @@ public class DeliveryAddressServiceTest {
             DeliveryAddressEntityNotFoundException::new);
 
     // when
-    DeliveryAddressInsertDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자1", null);
+    DeliveryAddressInsertDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자11", null);
     deliveryAddressService.createDeliveryAddress(requestDto);
 
     // then
