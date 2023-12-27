@@ -10,6 +10,6 @@ public interface DeliveryAddressRepository extends JpaRepository<DeliveryAddress
     @Query("SELECT da FROM DeliveryAddress da WHERE da.userId = :userId ORDER BY da.deliveryUsedAt DESC")
     List<DeliveryAddress> findAllByUserId(Long userId);
     Long countByUserId(Long userId);
-    @Query("select da from DeliveryAddress da where da.userId = :userId order by da.deliveryUsedAt desc")
+    @Query("select da from DeliveryAddress da where da.userId = :userId order by da.deliveryUsedAt ASC")
     List<DeliveryAddress> findOldestByUserId(Long userId, Pageable pageable);
 }

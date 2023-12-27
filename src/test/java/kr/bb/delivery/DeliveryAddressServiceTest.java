@@ -69,19 +69,22 @@ public class DeliveryAddressServiceTest {
   }
 
   @Test
-  @DisplayName("배송 주소지 생성시 목록은 10개를 넘어가면 안된다")
+  @DisplayName("배송지 목록이 10개이면 신규 배송지를 가장 오래된 배송지에 덮어쓴다")
   void addressListShouldNotExceedTheLimit(){
     // given
+    // 가장 오래된 배송지 entity 먼저 찾아놓기
     DeliveryAddress oldestDeliveryAddress = deliveryAddressRepository.findOldestByUserId(5L, Pageable.ofSize(1)).stream().findFirst().orElseThrow(
             DeliveryAddressEntityNotFoundException::new);
 
     // when
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자1", null);
+    // 신규 배송지 요청 발생시
+    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자11", null);
     deliveryAddressService.createDeliveryAddress(requestDto);
 
     // then
+    // 위 entity가 새로운 배송지로 덮어쓰기가 됐다
     assertEquals(deliveryAddressRepository.countByUserId(5L), 10);
-    assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자1");
+    assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자11");
   }
 
   DeliveryAddressInsertRequestDto createDeliveryAddressInsertRequest(Long userId, String recipientName, Long deliveryAddressId){
