@@ -3,10 +3,11 @@ package kr.bb.delivery.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertRequestDto;
+import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.dto.response.DeliveryAddressReadResponseDto;
 import kr.bb.delivery.entity.DeliveryAddress;
 import kr.bb.delivery.exception.errors.DeliveryAddressEntityNotFoundException;
+import kr.bb.delivery.mapper.DeliveryAddressMapper;
 import kr.bb.delivery.repository.DeliveryAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class DeliveryAddressService {
 
   /** 배송 주소지 생성 API) 배송 주소지 생성 10개 미만이면 주소지를 추가하고, 10개 이상이면 updatedAt이 가장 오래된 row를 새로운 정보로 덮어씌운다. */
   @Transactional
-  public void createDeliveryAddress(DeliveryAddressInsertRequestDto dto) {
+  public void createDeliveryAddress(DeliveryAddressInsertDto dto) {
     long addressCount = deliveryAddressRepository.countByUserId(dto.getUserId());
     if (addressCount == 10) {
       DeliveryAddress oldestAddress =
@@ -50,7 +51,7 @@ public class DeliveryAddressService {
         deliveryAddress.updateTime();
       // 신규 배송지 추가시
       } else {
-        deliveryAddressRepository.save(dto.toEntity());
+        deliveryAddressRepository.save(DeliveryAddressMapper.toEntity(dto));
       }
     }
   }

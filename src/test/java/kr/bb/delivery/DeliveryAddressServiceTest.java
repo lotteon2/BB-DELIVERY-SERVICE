@@ -4,9 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertRequestDto;
+import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.dto.response.DeliveryAddressReadResponseDto;
 import kr.bb.delivery.entity.DeliveryAddress;
 import kr.bb.delivery.exception.errors.DeliveryAddressEntityNotFoundException;
@@ -47,7 +46,7 @@ public class DeliveryAddressServiceTest {
   @Test
   @DisplayName("기존 배송지 선택")
   void selectExistingDeliveryAddressFromList() {
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", 5L);
+    DeliveryAddressInsertDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", 5L);
 
     deliveryAddressService.createDeliveryAddress(requestDto);
     List<DeliveryAddress> list = deliveryAddressRepository.findAllByUserId(1L);
@@ -59,7 +58,7 @@ public class DeliveryAddressServiceTest {
   @Test
   @DisplayName("신규 배송지 생성")
   void appendDeliveryAddressToList() {
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", null);
+    DeliveryAddressInsertDto requestDto = createDeliveryAddressInsertRequest(1L, "손흥민", null);
   
     deliveryAddressService.createDeliveryAddress(requestDto);
     List<DeliveryAddress> list = deliveryAddressRepository.findAllByUserId(1L);
@@ -76,7 +75,7 @@ public class DeliveryAddressServiceTest {
             DeliveryAddressEntityNotFoundException::new);
 
     // when
-    DeliveryAddressInsertRequestDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자1", null);
+    DeliveryAddressInsertDto requestDto = createDeliveryAddressInsertRequest(5L, "수신자1", null);
     deliveryAddressService.createDeliveryAddress(requestDto);
 
     // then
@@ -84,8 +83,8 @@ public class DeliveryAddressServiceTest {
     assertThat(oldestDeliveryAddress.getDeliveryRecipientName()).isEqualTo("수신자1");
   }
 
-  DeliveryAddressInsertRequestDto createDeliveryAddressInsertRequest(Long userId, String recipientName, Long deliveryAddressId){
-    return DeliveryAddressInsertRequestDto.builder()
+  DeliveryAddressInsertDto createDeliveryAddressInsertRequest(Long userId, String recipientName, Long deliveryAddressId){
+    return DeliveryAddressInsertDto.builder()
             .deliveryAddressId(deliveryAddressId)
             .userId(userId)
             .recipientName(recipientName)

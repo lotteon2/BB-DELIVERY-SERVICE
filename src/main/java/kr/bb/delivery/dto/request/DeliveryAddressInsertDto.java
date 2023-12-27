@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryAddressInsertRequestDto {
+public class DeliveryAddressInsertDto {
   @Nullable private Long deliveryAddressId;
   @NotEmpty private Long userId;
   @NotEmpty private String recipientName;
@@ -21,16 +21,4 @@ public class DeliveryAddressInsertRequestDto {
   @NotEmpty private String roadName;
   @NotEmpty private String addressDetail;
   @NotEmpty private String phoneNumber;
-
-  public DeliveryAddress toEntity() {
-    return DeliveryAddress.builder()
-        .userId(this.getUserId())
-        .deliveryRecipientName(this.getRecipientName())
-        .deliveryRoadName(this.getRoadName())
-        .deliveryAddressDetail(this.getAddressDetail())
-        .deliveryZipcode(this.getZipcode())
-        .deliveryRecipientPhoneNumber(this.getPhoneNumber())
-        .deliveryUsedAt(LocalDateTime.now())
-        .build();
-  }
 }

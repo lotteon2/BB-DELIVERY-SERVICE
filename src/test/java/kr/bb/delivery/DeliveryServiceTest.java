@@ -1,8 +1,12 @@
 package kr.bb.delivery;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 
-import bloomingblooms.response.SuccessResponse;
+import bloomingblooms.domain.delivery.UpdateOrderStatusDto;
+import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +16,7 @@ import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
 import kr.bb.delivery.entity.DeliveryStatus;
+import kr.bb.delivery.kafka.KafkaProducer;
 import kr.bb.delivery.repository.DeliveryRepository;
 import kr.bb.delivery.service.DeliveryService;
 import org.junit.jupiter.api.Assertions;
@@ -30,10 +35,12 @@ public class DeliveryServiceTest {
   @Autowired private DeliveryService deliveryService;
   @Autowired private DeliveryRepository deliveryRepository;
   @MockBean private OrderServiceClient orderServiceClient;
+  @MockBean private KafkaProducer<UpdateOrderStatusDto> orderStatusDtoKafkaProducer;
 
   @BeforeEach
   void setup() {
-    deliveryService = new DeliveryService(deliveryRepository, orderServiceClient);
+    deliveryService =
+        new DeliveryService(deliveryRepository, orderServiceClient, orderStatusDtoKafkaProducer);
   }
 
   @Test
@@ -105,17 +112,18 @@ public class DeliveryServiceTest {
     // given
     Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
 
-    Long deliveryOrderId = 1L;
+    String orderDeliveryId = "가게주문id";
     String status = "PROCESSING";
 
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
     delivery.modifyStatus(status);
 
-    SuccessResponse<Long> mockResponse = new SuccessResponse<>("200", "Success", savedDeliveryId);
-    Mockito.when(orderServiceClient.getDeliveryId(deliveryOrderId)).thenReturn(mockResponse);
+    Mockito.when(orderServiceClient.getDeliveryId(orderDeliveryId))
+        .thenReturn(CommonResponse.success(savedDeliveryId));
+    doNothing().when(orderStatusDtoKafkaProducer).send(eq("order-delivery-status"), any());
 
     // when
-    Delivery modifiedStatusDelivery = deliveryService.changeStatus(deliveryOrderId, status);
+    Delivery modifiedStatusDelivery = deliveryService.changeStatus(orderDeliveryId, status);
 
     // then
     Assertions.assertEquals(modifiedStatusDelivery.getDeliveryStatus(), DeliveryStatus.PROCESSING);
@@ -128,11 +136,11 @@ public class DeliveryServiceTest {
     Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
-    Long orderId = 1L;
+    String orderId = "가게주문id";
     String status = "PROCESSED";
 
-    SuccessResponse<Long> mockResponse = new SuccessResponse<>("200", "Success", savedDeliveryId);
-    Mockito.when(orderServiceClient.getDeliveryId(orderId)).thenReturn(mockResponse);
+    Mockito.when(orderServiceClient.getDeliveryId(orderId))
+        .thenReturn(CommonResponse.success(savedDeliveryId));
 
     // when, then
     Assertions.assertThrows(
@@ -146,11 +154,11 @@ public class DeliveryServiceTest {
     Delivery delivery = createDeliveryEntity("홍길동", "010-1111-1111");
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
 
-    Long orderId = 1L;
-    String status = "INITIAL";
+    String orderId = "가게주문id";
+    String status = "PENDING";
 
-    SuccessResponse<Long> mockResponse = new SuccessResponse<>("200", "Success", savedDeliveryId);
-    Mockito.when(orderServiceClient.getDeliveryId(orderId)).thenReturn(mockResponse);
+    Mockito.when(orderServiceClient.getDeliveryId(orderId))
+        .thenReturn(CommonResponse.success(savedDeliveryId));
 
     // when, then
     Assertions.assertThrows(
@@ -177,8 +185,7 @@ public class DeliveryServiceTest {
     return list;
   }
 
-  private Delivery createDeliveryEntity(
-      String ordererName, String ordererPhoneNumber) {
+  private Delivery createDeliveryEntity(String ordererName, String ordererPhoneNumber) {
     return Delivery.builder()
         .deliveryOrdererName(ordererName)
         .deliveryOrdererPhoneNumber(ordererPhoneNumber)
@@ -186,7 +193,7 @@ public class DeliveryServiceTest {
         .deliveryRecipientName("이순신")
         .deliveryRecipientPhoneNumber("010-2222-2222")
         .deliveryZipcode("05231")
-        .deliveryStatus(DeliveryStatus.PENDING)
+        .deliveryStatus(DeliveryStatus.PROCESSING)
         .deliveryRoadName("서울시 송파구 올림픽로 23가길 22-1")
         .deliveryAddressDetail("401호")
         .deliveryRequest("빠른 배송 부탁드려요~")

@@ -1,22 +1,20 @@
 package kr.bb.delivery.entity;
 
+import lombok.Getter;
+
 public enum DeliveryStatus {
-  INITIAL("주문 접수전", 0),
   PENDING("주문접수", 1),
   PROCESSING("배송시작", 2),
   COMPLETED("배송완료", 3),
   CANCELED("배송취소", 4);
 
   private final String message;
+  @Getter
   private final int order;
 
   DeliveryStatus(String message, int order) {
     this.message = message;
     this.order = order;
-  }
-
-  public int getOrder() {
-    return order;
   }
 
   public static DeliveryStatus fromString(String status){
