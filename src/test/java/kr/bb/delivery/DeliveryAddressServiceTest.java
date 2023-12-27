@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import bloomingblooms.domain.delivery.DeliveryAddressInsertDto;
 import java.util.List;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.dto.response.DeliveryAddressReadResponseDto;
 import kr.bb.delivery.entity.DeliveryAddress;
 import kr.bb.delivery.exception.errors.DeliveryAddressEntityNotFoundException;

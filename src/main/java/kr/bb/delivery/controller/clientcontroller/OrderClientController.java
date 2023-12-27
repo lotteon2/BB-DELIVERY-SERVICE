@@ -1,8 +1,8 @@
 package kr.bb.delivery.controller.clientcontroller;
 
+import bloomingblooms.domain.delivery.DeliveryAddressInsertDto;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.service.DeliveryAddressService;

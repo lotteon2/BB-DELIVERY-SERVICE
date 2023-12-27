@@ -1,9 +1,9 @@
 package kr.bb.delivery.service;
 
+import bloomingblooms.domain.delivery.DeliveryAddressInsertDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.dto.response.DeliveryAddressReadResponseDto;
 import kr.bb.delivery.entity.DeliveryAddress;
 import kr.bb.delivery.exception.errors.DeliveryAddressEntityNotFoundException;

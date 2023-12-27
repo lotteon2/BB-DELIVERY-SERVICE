@@ -1,7 +1,7 @@
 package kr.bb.delivery.mapper;
 
+import bloomingblooms.domain.delivery.DeliveryAddressInsertDto;
 import java.time.LocalDateTime;
-import kr.bb.delivery.dto.request.DeliveryAddressInsertDto;
 import kr.bb.delivery.entity.DeliveryAddress;
 
 public class DeliveryAddressMapper {
