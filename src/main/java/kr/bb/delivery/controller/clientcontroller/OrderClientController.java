@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/delivery")
+@RequestMapping("/client/delivery")
 public class OrderClientController {
   private final DeliveryService deliveryService;
   private final DeliveryAddressService deliveryAddressService;
