@@ -40,8 +40,8 @@ public class OrderClientController {
     deliveryAddressService.createDeliveryAddress(requestDto);
   }
 
-  @GetMapping("/requests")
-  public CommonResponse<Map<Long, DeliveryInfoDto>> getDeliveryInfo(@RequestParam List<Long> deliveryIds){
+  @PostMapping("/requests")
+  public CommonResponse<Map<Long, DeliveryInfoDto>> getDeliveryInfo(@RequestBody List<Long> deliveryIds){
     Map<Long, DeliveryInfoDto> deliveryInfo = deliveryService.getDeliveryInfo(deliveryIds);
     return CommonResponse.success(deliveryInfo);
   }
