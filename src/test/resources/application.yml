@@ -20,6 +20,8 @@ spring:
   sql:
     init:
       encoding: UTF-8   # 한글로 인코딩 설정
+  main:
+    allow-circular-references: true
 
 endpoint:
   order-service: http://localhost:8900

@@ -165,6 +165,19 @@ public class DeliveryServiceTest {
         IllegalStateException.class, () -> deliveryService.changeStatus(orderId, status));
   }
 
+  @Test
+  @DisplayName("정기 구독 주문 발생시 신규 배송을 마지막 배송과 동일하게 생성한다")
+  void createDeliveryForSubscription(){
+    // given
+    List<Long> oldDeliveryIds = List.of(1L);
+    // when
+    List<Long> newDeliveryIds = deliveryService.createDeliveryForSubscription(
+            oldDeliveryIds);
+    // then
+    assertThat(newDeliveryIds.size()).isEqualTo(1L);
+  }
+
+
   private List<DeliveryInsertRequestDto> createInsertRequestDto() {
     List<DeliveryInsertRequestDto> list = new ArrayList<>();
 
