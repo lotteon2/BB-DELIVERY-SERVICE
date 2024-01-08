@@ -11,19 +11,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeliveryAddressReadResponseDto {
-    private String recipientName;
-    private String zipcode;
-    private String roadName;
-    private String addressDetail;
-    private String phoneNumber;
 
-    public static DeliveryAddressReadResponseDto fromEntity(DeliveryAddress deliveryAddress){
-        return DeliveryAddressReadResponseDto.builder()
-                .recipientName(deliveryAddress.getDeliveryRecipientName())
-                .zipcode(deliveryAddress.getDeliveryZipcode())
-                .roadName(deliveryAddress.getDeliveryRoadName())
-                .addressDetail(deliveryAddress.getDeliveryAddressDetail())
-                .phoneNumber(deliveryAddress.getDeliveryRecipientPhoneNumber())
-                .build();
-    }
+  private Long deliveryAddressId;
+  private String recipientName;
+  private String zipcode;
+  private String roadName;
+  private String addressDetail;
+  private String phoneNumber;
+
+  public static DeliveryAddressReadResponseDto fromEntity(DeliveryAddress deliveryAddress) {
+    return DeliveryAddressReadResponseDto.builder()
+        .deliveryAddressId(deliveryAddress.getDeliveryAddressId())
+        .recipientName(deliveryAddress.getDeliveryRecipientName())
+        .zipcode(deliveryAddress.getDeliveryZipcode())
+        .roadName(deliveryAddress.getDeliveryRoadName())
+        .addressDetail(deliveryAddress.getDeliveryAddressDetail())
+        .phoneNumber(deliveryAddress.getDeliveryRecipientPhoneNumber())
+        .build();
+  }
 }
