@@ -36,8 +36,9 @@ public class OrderClientController {
   }
 
   @PostMapping("/delivery-address")
-  public void createDeliveryAddress(@RequestBody DeliveryAddressInsertDto requestDto){
+  public CommonResponse<Void> createDeliveryAddress(@RequestBody DeliveryAddressInsertDto requestDto){
     deliveryAddressService.createDeliveryAddress(requestDto);
+    return CommonResponse.success(null);
   }
 
   @PostMapping("/requests")
