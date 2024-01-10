@@ -1,5 +1,6 @@
 package kr.bb.delivery.entity;
 
+import bloomingblooms.domain.notification.delivery.DeliveryStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -75,8 +76,8 @@ public class Delivery extends BaseEntity {
     this.deliveryAddressDetail = dto.getAddressDetail();
   }
 
-  public void modifyStatus(String status){
-    this.deliveryStatus = DeliveryStatus.valueOf(status);
+  public void modifyStatus(DeliveryStatus deliveryStatus){
+    this.deliveryStatus = deliveryStatus;
   }
 
   public void generateTrackingNumber(String trackingNumber){this.deliveryTrackingNumber = trackingNumber;}

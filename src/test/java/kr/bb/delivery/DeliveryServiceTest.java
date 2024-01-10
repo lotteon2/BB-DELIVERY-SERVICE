@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 
 import bloomingblooms.domain.delivery.UpdateOrderStatusDto;
+import bloomingblooms.domain.notification.delivery.DeliveryStatus;
 import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
-import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.kafka.KafkaProducer;
 import kr.bb.delivery.repository.DeliveryRepository;
 import kr.bb.delivery.service.DeliveryService;
@@ -116,7 +116,7 @@ public class DeliveryServiceTest {
     String status = "PROCESSING";
 
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
-    delivery.modifyStatus(status);
+    delivery.modifyStatus(DeliveryStatus.valueOf(status));
 
     Mockito.when(orderServiceClient.getDeliveryId(orderDeliveryId))
         .thenReturn(CommonResponse.success(savedDeliveryId));
