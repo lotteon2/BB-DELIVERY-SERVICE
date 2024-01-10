@@ -116,7 +116,7 @@ public class DeliveryServiceTest {
     String status = "PROCESSING";
 
     Long savedDeliveryId = deliveryRepository.save(delivery).getDeliveryId();
-    delivery.modifyStatus(status);
+    delivery.modifyStatus(DeliveryStatus.valueOf(status));
 
     Mockito.when(orderServiceClient.getDeliveryId(orderDeliveryId))
         .thenReturn(CommonResponse.success(savedDeliveryId));

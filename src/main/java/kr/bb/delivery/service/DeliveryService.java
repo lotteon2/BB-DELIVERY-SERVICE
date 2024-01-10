@@ -41,6 +41,7 @@ public class DeliveryService {
     List<Long> deliveryIds = new ArrayList<>();
     for (int i = 0; i < dtoList.size(); i++) {
       Delivery delivery = dtoList.get(i).toEntity();
+      delivery.generateTrackingNumber(UUID.randomUUID().toString());
       deliveryIds.add(deliveryRepository.save(delivery).getDeliveryId());
     }
     return deliveryIds;
@@ -76,11 +77,7 @@ public class DeliveryService {
       throw new IllegalStateException("잘못된 요청입니다. 이전 배송 상태로 변경이 불가합니다.");
     }
 
-    // 운송장번호 부여
-    if (newStatus.equals(DeliveryStatus.PENDING)) {
-      savedDelivery.generateTrackingNumber(UUID.randomUUID().toString());
-    }
-    savedDelivery.modifyStatus(status);
+    savedDelivery.modifyStatus(newStatus);
 
     // order-service로 상태 sync 맞추기 kafka send
     UpdateOrderStatusDto updateOrderStatusDto =

@@ -75,8 +75,8 @@ public class Delivery extends BaseEntity {
     this.deliveryAddressDetail = dto.getAddressDetail();
   }
 
-  public void modifyStatus(String status){
-    this.deliveryStatus = DeliveryStatus.valueOf(status);
+  public void modifyStatus(DeliveryStatus deliveryStatus){
+    this.deliveryStatus = deliveryStatus;
   }
 
   public void generateTrackingNumber(String trackingNumber){this.deliveryTrackingNumber = trackingNumber;}
