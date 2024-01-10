@@ -11,7 +11,7 @@ import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.delivery.client.OrderServiceClient;
+import kr.bb.delivery.feign.OrderServiceClient;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
