@@ -1,5 +1,6 @@
 package kr.bb.delivery.entity;
 
+import bloomingblooms.domain.notification.delivery.DeliveryStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

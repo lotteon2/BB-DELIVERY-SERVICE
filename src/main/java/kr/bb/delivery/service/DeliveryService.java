@@ -2,6 +2,7 @@ package kr.bb.delivery.service;
 
 import bloomingblooms.domain.delivery.DeliveryInfoDto;
 import bloomingblooms.domain.delivery.UpdateOrderStatusDto;
+import bloomingblooms.domain.notification.delivery.DeliveryStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
-import kr.bb.delivery.entity.DeliveryStatus;
 import kr.bb.delivery.exception.errors.DeliveryEntityNotFoundException;
 import kr.bb.delivery.kafka.KafkaProducer;
 import kr.bb.delivery.repository.DeliveryRepository;
@@ -81,7 +81,7 @@ public class DeliveryService {
 
     // order-service로 상태 sync 맞추기 kafka send
     UpdateOrderStatusDto updateOrderStatusDto =
-        UpdateOrderStatusDto.builder().orderDeliveryId(orderDeliveryId).status(status).build();
+        UpdateOrderStatusDto.builder().orderDeliveryId(orderDeliveryId).deliveryStatus(newStatus).build();
     orderStatusDtoKafkaProducer.send("order-delivery-status", updateOrderStatusDto);
 
     return deliveryRepository.save(savedDelivery);
