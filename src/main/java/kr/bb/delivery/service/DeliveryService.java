@@ -81,7 +81,11 @@ public class DeliveryService {
 
     // order-service로 상태 sync 맞추기 kafka send
     UpdateOrderStatusDto updateOrderStatusDto =
-        UpdateOrderStatusDto.builder().orderDeliveryId(orderDeliveryId).deliveryStatus(newStatus).build();
+        UpdateOrderStatusDto.builder()
+            .orderDeliveryId(orderDeliveryId)
+            .phoneNumber(savedDelivery.getDeliveryOrdererPhoneNumber())
+            .deliveryStatus(newStatus)
+            .build();
     orderStatusDtoKafkaProducer.send("order-delivery-status", updateOrderStatusDto);
 
     return deliveryRepository.save(savedDelivery);
@@ -123,6 +127,8 @@ public class DeliveryService {
                 Delivery::getDeliveryId,
                 delivery ->
                     DeliveryInfoDto.builder()
+                        .deliveryId(delivery.getDeliveryId())
+                        .deliveryTrackingNumber(delivery.getDeliveryTrackingNumber())
                         .ordererName(delivery.getDeliveryOrdererName())
                         .ordererPhone(delivery.getDeliveryOrdererPhoneNumber())
                         .ordererEmail(delivery.getDeliveryOrdererEmail())
