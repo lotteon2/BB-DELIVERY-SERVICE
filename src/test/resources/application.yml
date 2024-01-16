@@ -39,3 +39,6 @@ cloud:
     credentials:
       ACCESS_KEY_ID: "test"
       SECRET_ACCESS_KEY: "test"
+    sqs:
+      subscription-delivery-update-queue:
+        name:
