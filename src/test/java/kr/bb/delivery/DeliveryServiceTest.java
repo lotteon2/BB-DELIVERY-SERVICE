@@ -6,19 +6,22 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 
 import bloomingblooms.domain.delivery.UpdateOrderStatusDto;
+import bloomingblooms.domain.delivery.UpdateOrderSubscriptionStatusDto;
 import bloomingblooms.domain.notification.delivery.DeliveryStatus;
 import bloomingblooms.response.CommonResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.delivery.feign.OrderServiceClient;
 import kr.bb.delivery.dto.request.DeliveryInsertRequestDto;
 import kr.bb.delivery.dto.request.DeliveryUpdateRequestDto;
 import kr.bb.delivery.dto.response.DeliveryReadResponseDto;
 import kr.bb.delivery.entity.Delivery;
+import kr.bb.delivery.feign.OrderServiceClient;
 import kr.bb.delivery.kafka.KafkaProducer;
 import kr.bb.delivery.repository.DeliveryRepository;
 import kr.bb.delivery.service.DeliveryService;
+import kr.bb.delivery.service.DeliverySqsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +39,8 @@ public class DeliveryServiceTest {
   @Autowired private DeliveryRepository deliveryRepository;
   @MockBean private OrderServiceClient orderServiceClient;
   @MockBean private KafkaProducer<UpdateOrderStatusDto> orderStatusDtoKafkaProducer;
+  @Autowired private DeliverySqsService deliverySqsService;
+  @MockBean private KafkaProducer<UpdateOrderSubscriptionStatusDto> orderSubscriptionStatusDtoKafkaProducer;
 
   @BeforeEach
   void setup() {
@@ -176,7 +181,16 @@ public class DeliveryServiceTest {
     // then
     assertThat(newDeliveryIds.size()).isEqualTo(1L);
   }
+  
+  @Test
+  @DisplayName("구독 주문 상태 업데이트")
+  void updateSubscriptionDelivery(){
+    LocalDateTime localDateTime  = LocalDateTime.now();
 
+    doNothing().when(orderSubscriptionStatusDtoKafkaProducer).send(eq("order-subscription-status"), any());
+
+    deliverySqsService.updateSubscriptionDelivery(localDateTime);
+  }
 
   private List<DeliveryInsertRequestDto> createInsertRequestDto() {
     List<DeliveryInsertRequestDto> list = new ArrayList<>();
