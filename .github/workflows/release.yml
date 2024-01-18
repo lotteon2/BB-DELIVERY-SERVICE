@@ -3,7 +3,7 @@ name: Release Tag
 on:
   push:
     branches:
-      - emergency/main
+      - main
 
 jobs:
   update_release_draft:
