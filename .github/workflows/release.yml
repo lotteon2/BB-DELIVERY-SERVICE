@@ -58,4 +58,4 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: nowgnas/bb-apigateway:${{ steps.tag_version.outputs.new_tag }}, nowgnas/bb-apigateway:latest
+          tags: nowgnas/bb-delivery:${{ steps.tag_version.outputs.new_tag }}, nowgnas/bb-delivery:latest
